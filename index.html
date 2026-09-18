@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E7C6B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Volhouden">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E">
+<title>Volhouden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F2F6F3; --surface:#FFFFFF; --surface2:#E8EFEB; --ink:#13201B; --ink2:#4B5D56; --ink3:#7C8C86; --line:#D6DFDA;
+  --accent:#0E7C6B; --accent-ink:#FFFFFF; --accent-soft:#D5EEE7;
+  --gold:#8E6300; --gold-soft:#F6E8C2;
+  --danger:#B3402F; --danger-soft:#F8E0DB;
+  --shadow:0 12px 32px rgba(19,32,27,.10);
+  --radius:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1411; --surface:#151F19; --surface2:#1D2A24; --ink:#E8EFEB; --ink2:#A7B6AF; --ink3:#71837C; --line:#27352E;
+    --accent:#4ECBB3; --accent-ink:#0A1A16; --accent-soft:#173A32;
+    --gold:#E6BB52; --gold-soft:#3A2F12;
+    --danger:#F08B79; --danger-soft:#44231E;
+    --shadow:0 12px 32px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1411; --surface:#151F19; --surface2:#1D2A24; --ink:#E8EFEB; --ink2:#A7B6AF; --ink3:#71837C; --line:#27352E;
+  --accent:#4ECBB3; --accent-ink:#0A1A16; --accent-soft:#173A32;
+  --gold:#E6BB52; --gold-soft:#3A2F12;
+  --danger:#F08B79; --danger-soft:#44231E;
+  --shadow:0 12px 32px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.hbtns{display:flex; gap:8px; flex:none}
+html{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif; font-size:16px; line-height:1.45;
+  padding-inline:16px; padding-block:18px 120px;
+  -webkit-font-smoothing:antialiased;
+}
+.app{max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:28px}
+h1,h2,h3{margin:0; font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif; text-wrap:balance}
+h1{font-size:30px; font-weight:800; letter-spacing:-.02em; line-height:1.05}
+h2{font-size:15px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink2)}
+p{margin:0}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+.num{font-family:"Bricolage Grotesque","Figtree",sans-serif; font-variant-numeric:tabular-nums}
+
+.top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
+.sub{color:var(--ink2); margin-top:4px; font-size:15px}
+.icon-btn{background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-weight:600; font-size:14px; color:var(--ink2)}
+.icon-btn:hover{color:var(--ink)}
+
+.hero{
+  background:var(--accent); color:var(--accent-ink); border-radius:24px; padding:26px 22px 22px; box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.hero::after{content:""; position:absolute; right:-60px; top:-60px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.08)}
+.eyebrow{font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; opacity:.8}
+.money{font-size:clamp(44px,12vw,64px); font-weight:800; letter-spacing:-.03em; line-height:1; margin-top:8px}
+.hero-sub{margin-top:12px; font-size:15px; opacity:.92; display:flex; flex-wrap:wrap; gap:6px 14px}
+.hero-sub strong{font-weight:700}
+
+.sec-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:12px}
+section > h2{margin-bottom:12px}
+.hint{color:var(--ink3); font-size:14px; margin-top:-4px; margin-bottom:12px}
+.link{background:none; border:0; padding:0; color:var(--accent); font-weight:600; font-size:14px}
+
+.habits{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+.habit{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 16px 14px; text-align:left;
+  display:flex; flex-direction:column; gap:6px; min-width:0;
+}
+.habit:hover{border-color:var(--accent)}
+.habit .name{font-weight:600; color:var(--ink2); font-size:14px; display:flex; justify-content:space-between; gap:6px}
+.habit .days{font-size:40px; font-weight:800; letter-spacing:-.03em; line-height:1}
+.habit .days small{font-size:15px; font-weight:600; letter-spacing:0; margin-left:4px; color:var(--ink2); font-family:"Figtree",sans-serif}
+.habit .meta{font-size:13px; color:var(--ink3)}
+.bar{height:6px; background:var(--surface2); border-radius:999px; overflow:hidden; margin-top:6px}
+.bar > i{display:block; height:100%; background:var(--accent); border-radius:999px; transition:width .5s ease}
+.habit .next{font-size:12px; color:var(--ink2); margin-top:4px}
+.chip{font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 7px; border-radius:999px; background:var(--gold-soft); color:var(--gold); white-space:nowrap}
+.chip.ok{background:var(--accent-soft); color:var(--accent)}
+
+.goals{display:flex; flex-direction:column; gap:10px}
+.goal{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; display:flex; flex-direction:column; gap:6px}
+.goal .row{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.goal .title{font-weight:600; display:flex; gap:8px; align-items:center; min-width:0}
+.goal .title span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.goal .amt{font-size:14px; color:var(--ink2); white-space:nowrap}
+.goal .bar{margin-top:4px}
+.goal .bar > i{background:var(--gold)}
+.goal.reached .bar > i{background:var(--accent)}
+.goal .foot{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; color:var(--ink3)}
+.goal .foot .acts{display:flex; gap:12px}
+.goal.bought{opacity:.6}
+.goal.bought .title span{text-decoration:line-through}
+.x{background:none; border:0; color:var(--ink3); font-size:18px; line-height:1; padding:0 4px}
+.x:hover{color:var(--danger)}
+.form{display:flex; flex-direction:column; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; margin-top:10px}
+.form .inline{display:flex; gap:10px}
+.form .inline > *{flex:1; min-width:0}
+input,select,textarea{
+  font:inherit; color:var(--ink); background:var(--surface2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent); outline-offset:0; border-color:transparent}
+label{font-size:13px; font-weight:600; color:var(--ink2); display:flex; flex-direction:column; gap:5px}
+.btn{border:0; border-radius:12px; padding:12px 16px; font-weight:700; background:var(--accent); color:var(--accent-ink)}
+.btn.secondary{background:var(--surface2); color:var(--ink)}
+.btn.danger{background:var(--danger-soft); color:var(--danger)}
+.btn.ghost{background:none; color:var(--ink2); font-weight:600}
+.btn[disabled]{opacity:.5; cursor:default}
+
+.mlist{display:flex; flex-direction:column; gap:8px}
+.mrow{display:grid; grid-template-columns:86px 1fr auto; gap:10px; align-items:baseline; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 14px; font-size:14px}
+.mrow .h{font-weight:600; color:var(--ink2)}
+.mrow .d{color:var(--ink3); white-space:nowrap; font-size:13px}
+.mrow .got{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:6px}
+.mrow .got .chip{text-transform:none; letter-spacing:0; font-weight:600; font-size:12px}
+
+.timeline{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.timeline li{position:relative; padding:10px 0 10px 34px}
+.timeline li::before{content:""; position:absolute; left:4px; top:14px; width:12px; height:12px; border-radius:50%; border:2px solid var(--line); background:var(--bg); box-sizing:border-box; z-index:1}
+.timeline li::after{content:""; position:absolute; left:9px; top:28px; bottom:-12px; width:2px; background:var(--line)}
+.timeline li:last-child::after{display:none}
+.timeline li.done::before{background:var(--accent); border-color:var(--accent)}
+.timeline li.done::after{background:var(--accent)}
+.timeline li.next::before{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft)}
+.timeline .when{font-weight:700; font-size:13px; color:var(--ink2); text-transform:uppercase; letter-spacing:.06em}
+.timeline .what{font-size:15px; margin-top:2px}
+.timeline li.done .what{color:var(--ink2)}
+.timeline .eta{font-size:13px; color:var(--accent); font-weight:600; margin-top:2px}
+
+.reasons{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+.reasons li{background:var(--surface); border-left:3px solid var(--gold); border-radius:0 12px 12px 0; padding:12px 14px; font-size:16px; line-height:1.4}
+.reasons li.sample{border-left-color:var(--line); color:var(--ink2)}
+
+.routine{display:flex; flex-direction:column; gap:8px}
+.routine .prog{display:flex; justify-content:space-between; align-items:baseline; font-size:14px; color:var(--ink2); gap:10px}
+.routine .prog b{font-weight:800; color:var(--ink); font-size:18px}
+.routine .bar > i{background:var(--gold)}
+.routine.full .bar > i{background:var(--accent)}
+.task{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; cursor:pointer; user-select:none}
+.task:hover{border-color:var(--accent)}
+.task .box{width:22px; height:22px; border-radius:7px; border:2px solid var(--line); flex:none; display:grid; place-items:center; color:var(--accent-ink); background:var(--surface2)}
+.task.done .box{background:var(--accent); border-color:var(--accent)}
+.task.done .box::after{content:""; width:6px; height:11px; border:solid currentColor; border-width:0 2px 2px 0; transform:rotate(45deg) translate(-1px,-1px)}
+.task.done span{color:var(--ink3); text-decoration:line-through}
+.task input{position:absolute; opacity:0; width:0; height:0}
+
+.subh{font-size:16px; font-weight:700; margin:18px 0 6px; color:var(--ink)}
+.food{display:flex; flex-direction:column; gap:8px}
+.meal{display:grid; grid-template-columns:96px 1fr; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:15px}
+.meal .when{font-weight:700; color:var(--gold); font-size:13px; text-transform:uppercase; letter-spacing:.06em; padding-top:2px}
+.menu{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px}
+.menu li{display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:baseline; padding:9px 14px; border-radius:12px; background:var(--surface); border:1px solid var(--line); font-size:15px}
+.menu li .d{font-weight:700; color:var(--ink3); font-size:13px; text-transform:uppercase}
+.menu li .c{font-size:13px; color:var(--ink3); white-space:nowrap}
+.menu li.today{border-color:var(--accent); background:var(--accent-soft)}
+.menu li.today .d{color:var(--accent)}
+.staples{display:flex; flex-wrap:wrap; gap:6px}
+.staples span{font-size:13px; padding:5px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--line); color:var(--ink2)}
+@media (max-width:380px){ .meal{grid-template-columns:1fr} }
+
+.status{font-size:12px; color:var(--ink3); text-align:center}
+
+.sosbar{position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to top, var(--bg) 70%, transparent); pointer-events:none}
+.sos{pointer-events:auto; display:block; width:100%; max-width:560px; margin:0 auto; border:0; border-radius:16px; padding:16px; font-weight:800; font-size:17px;
+  background:var(--ink); color:var(--bg); box-shadow:var(--shadow); font-family:"Bricolage Grotesque","Figtree",sans-serif; letter-spacing:-.01em}
+.sos:hover{opacity:.92}
+
+.overlay{position:fixed; inset:0; background:rgba(8,14,12,.55); display:flex; align-items:flex-end; justify-content:center; z-index:20; overflow-y:auto; padding-top:calc(24px + env(safe-area-inset-top,0px))}
+.panel{background:var(--bg); color:var(--ink); width:100%; max-width:560px; border-radius:22px 22px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:16px; max-height:100%; overflow-y:auto}
+.panel h3{font-size:22px; font-weight:800; letter-spacing:-.02em}
+.panel .actions{display:flex; gap:10px; flex-wrap:wrap}
+.panel .actions .btn{flex:1}
+fieldset{border:1px solid var(--line); border-radius:14px; padding:12px 14px 14px; margin:0; display:flex; flex-direction:column; gap:10px; background:var(--surface)}
+legend{font-weight:700; padding:0 6px}
+fieldset .inline{display:flex; gap:10px}
+fieldset .inline > *{flex:1; min-width:0}
+fieldset .relapse{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; color:var(--ink3)}
+textarea{min-height:160px; resize:vertical}
+
+.sos-panel{background:var(--ink); color:var(--bg)}
+.sos-panel h3{font-size:34px; line-height:1.05}
+.sos-panel p{font-size:16px; opacity:.85}
+.timer{font-size:72px; font-weight:800; letter-spacing:-.04em; line-height:1; text-align:center; padding:10px 0}
+.timer.done{color:var(--accent)}
+.stake{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+.stake div{background:rgba(255,255,255,.08); border-radius:12px; padding:10px 12px; font-size:14px}
+.stake div b{display:block; font-size:20px; font-weight:800; font-family:"Bricolage Grotesque",sans-serif}
+.sos-panel .reasons li{background:rgba(255,255,255,.07); color:var(--bg); border-left-color:var(--gold)}
+.sos-panel .btn.secondary{background:rgba(255,255,255,.12); color:var(--bg)}
+.sos-panel :focus-visible{outline-color:var(--gold)}
+
+.toast{position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:999px; font-size:14px; font-weight:600; box-shadow:var(--shadow); z-index:30; max-width:calc(100% - 32px); text-align:center}
+
+@media (max-width:380px){ .habits{grid-template-columns:1fr} .mrow{grid-template-columns:1fr auto} .mrow .h{grid-column:1/-1} }
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+.habits > .hint{grid-column:1/-1}
+.overlay.locked{background:rgba(8,14,12,.75)}
+.addrow{display:flex; gap:10px; align-items:flex-end}
+.addrow label{flex:1}
+.addrow .btn{flex:none}
+.status .link{font-size:12px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; min-height:120px}
+.panel .hint b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>Volhouden</h1>
+      <p class="sub" id="since">Vandaag begonnen</p>
+    </div>
+    <div class="hbtns">
+      <button class="icon-btn" id="btnLogin" type="button" hidden>Inloggen</button>
+      <button class="icon-btn" id="btnSettings" type="button">Instellen</button>
+    </div>
+  </header>
+
+  <section class="hero" aria-live="off">
+    <p class="eyebrow">Niet uitgegeven</p>
+    <div class="money num" id="money">€ 0,00</div>
+    <p class="hero-sub"><span><strong id="perDay">€ 0</strong> per dag blijft in je zak</span><span id="beaten"></span></p>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Vandaag</h2><button class="link" id="btnEditRoutine" type="button">Bewerken</button></div>
+    <p class="hint" id="routineHint">Structuur begint klein. Vink af wat je vandaag hebt gedaan. Morgen staat alles weer open.</p>
+    <div class="routine" id="routine"></div>
+  </section>
+
+  <section>
+    <h2>Vrij van</h2>
+    <p class="hint" id="estimateHint">De bedragen zijn nog schattingen. Tik op een gewoonte om in te vullen wat het je echt kostte.</p>
+    <div class="habits" id="habits"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Spaardoelen</h2><button class="link" id="btnAddGoal" type="button">+ Doel toevoegen</button></div>
+    <p class="hint">Je bespaarde geld vult de doelen van boven naar beneden. Koop iets pas als de balk vol is.</p>
+    <div class="goals" id="goals"></div>
+    <form class="form" id="goalForm" hidden>
+      <div class="inline">
+        <label>Wat wil je kopen of doen?<input id="goalName" type="text" maxlength="60" placeholder="Bijv. weekend Lissabon" required></label>
+        <label>Prijs (€)<input id="goalPrice" type="number" min="1" step="1" inputmode="numeric" placeholder="400" required></label>
+      </div>
+      <div class="inline">
+        <button class="btn" type="submit">Toevoegen</button>
+        <button class="btn ghost" type="button" id="goalCancel">Annuleren</button>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Volgende mijlpalen</h2>
+    <div class="mlist" id="milestones"></div>
+  </section>
+
+  <section id="healthSec" hidden>
+    <h2>Je lichaam zonder rook</h2>
+    <ol class="timeline" id="health"></ol>
+  </section>
+
+  <section>
+    <h2>Eten zonder gedoe</h2>
+    <p class="hint">Goedkoop en voedzaam gaan prima samen. Dit is de basis van de Schijf van Vijf, vertaald naar een gewone dag voor ongeveer 5 tot 7 euro.</p>
+    <div class="food">
+      <div class="meal"><span class="when">Ontbijt</span><span>Havermout met melk of yoghurt, een banaan en een lepel pindakaas. Vult lang, kost weinig.</span></div>
+      <div class="meal"><span class="when">Lunch</span><span>Volkorenbrood met ei, hummus of kip, plus rauwkost. Of gewoon de restjes van gisteravond.</span></div>
+      <div class="meal"><span class="when">Avond</span><span>Half bord groente, kwart aardappel, rijst of volkorenpasta, kwart eiwit: bonen, linzen, ei, kip, vis of tofu.</span></div>
+      <div class="meal"><span class="when">Tussendoor</span><span>Fruit, een handje ongezouten noten, kwark of yoghurt. Water of thee in plaats van frisdrank of bier.</span></div>
+    </div>
+    <h3 class="subh" id="menuTitle">Weekmenu</h3>
+    <p class="hint">Vier weekmenu's die rouleren: afwisseling zonder nadenken. Vandaag staat gemarkeerd.</p>
+    <ol class="menu" id="menu"></ol>
+    <p class="hint" id="menuNext" style="margin-top:8px"></p>
+    <h3 class="subh">Vaste boodschappen</h3>
+    <p class="hint">Hiermee kook je alles hierboven. Grote verpakkingen en het huismerk zijn per kilo het goedkoopst. Doe de boodschappen op een vast moment, bijvoorbeeld zaterdagochtend.</p>
+    <div class="staples">
+      <span>havermout</span><span>volkorenbrood</span><span>eieren</span><span>rijst</span><span>volkorenpasta</span><span>aardappelen</span>
+      <span>linzen en bonen (blik of droog)</span><span>kikkererwten</span><span>diepvriesgroente</span><span>seizoensgroente</span><span>uien en knoflook</span>
+      <span>tomatenblokjes</span><span>bananen en appels</span><span>magere kwark of yoghurt</span><span>melk of plantaardige melk</span><span>kipfilet of tofu</span>
+      <span>tonijn of makreel in blik</span><span>pindakaas</span><span>ongezouten noten</span><span>olijfolie</span><span>kruiden: kerrie, paprika, komijn</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Waarom ik dit doe</h2><button class="link" id="btnEditReasons" type="button">Bewerken</button></div>
+    <p class="hint" id="reasonsHint" hidden>Dit zijn voorbeelden. Schrijf je eigen redenen, in je eigen woorden. Die lees je terug op een moeilijk moment.</p>
+    <ul class="reasons" id="reasons"></ul>
+  </section>
+
+  <p class="status" id="status">Opgeslagen op dit apparaat</p>
+  <p class="status" id="who" hidden>Ingelogd als <b id="whoName"></b> · <button class="link" id="btnLogout" type="button">Uitloggen</button></p>
+  <p class="status"><button class="link" id="btnBackup" type="button">Back-up maken of terugzetten</button></p>
+</div>
+
+<div class="sosbar"><button class="sos" id="btnSOS" type="button">Ik heb het nu moeilijk</button></div>
+
+<!-- Eerste keer -->
+<div class="overlay locked" id="setupOverlay" hidden>
+  <form class="panel" id="setupForm" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+    <h3 id="setupTitle">Waar stop je mee?</h3>
+    <p class="hint">Kies wat voor jou geldt. Hierna vul je in wanneer je gestopt bent en wat het je ongeveer kostte. <b>Alles blijft op dit apparaat.</b> Niemand anders ziet het.</p>
+    <div class="routine" id="setupOpts"></div>
+    <label>Iets anders? Eén per regel<textarea id="setupCustom" style="min-height:70px" placeholder="Bijv. energiedrank"></textarea></label>
+    <p class="hint" id="setupErr" hidden>Kies minstens één ding.</p>
+    <div class="actions"><button class="btn" type="submit">Verder</button></div>
+  </form>
+</div>
+
+<!-- Noodmoment -->
+<div class="overlay" id="sosOverlay" hidden>
+  <div class="panel sos-panel" role="dialog" aria-modal="true" aria-labelledby="sosTitle">
+    <h3 id="sosTitle">Even wachten.</h3>
+    <p>Een trek is een golf. Hij komt op, piekt en zakt weer. Meestal binnen tien minuten. Je hoeft niets te doen, alleen te wachten.</p>
+    <div class="timer num" id="timer">10:00</div>
+    <p class="eyebrow">Wat je nu op het spel zet</p>
+    <div class="stake" id="stake"></div>
+    <p class="eyebrow">Je eigen woorden</p>
+    <ul class="reasons" id="sosReasons"></ul>
+    <div class="actions">
+      <button class="btn" id="sosHold" type="button">Ik hou vol</button>
+      <button class="btn secondary" id="sosClose" type="button">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- Instellingen -->
+<div class="overlay" id="settingsOverlay" hidden>
+  <form class="panel" id="settingsForm" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <h3 id="setTitle">Jouw cijfers</h3>
+    <p class="hint">Vul in wanneer je bent gestopt en wat het je ongeveer kostte. Hoe eerlijker, hoe motiverender de teller.</p>
+    <div id="habitFields"></div>
+    <div class="addrow">
+      <label>Nog een gewoonte toevoegen<input type="text" id="addHabitName" maxlength="30" placeholder="Bijv. gokken"></label>
+      <button class="btn secondary" type="button" id="addHabitBtn">Toevoegen</button>
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">Opslaan</button>
+      <button class="btn ghost" type="button" id="setCancel">Annuleren</button>
+    </div>
+  </form>
+</div>
+
+<!-- Dagritme -->
+<div class="overlay" id="routineOverlay" hidden>
+  <form class="panel" id="routineForm" role="dialog" aria-modal="true" aria-labelledby="routTitle">
+    <h3 id="routTitle">Mijn dagritme</h3>
+    <p class="hint">Eén punt per regel. Houd het bij vijf tot acht dingen die je elke dag écht kunt doen.</p>
+    <textarea id="routineText"></textarea>
+    <div class="actions">
+      <button class="btn" type="submit">Opslaan</button>
+      <button class="btn ghost" type="button" id="routCancel">Annuleren</button>
+    </div>
+  </form>
+</div>
+
+<!-- Redenen -->
+<div class="overlay" id="reasonsOverlay" hidden>
+  <form class="panel" id="reasonsForm" role="dialog" aria-modal="true" aria-labelledby="reasTitle">
+    <h3 id="reasTitle">Waarom ik dit doe</h3>
+    <p class="hint">Eén reden per regel. Schrijf ze alsof je ze tegen jezelf zegt op een zwak moment.</p>
+    <textarea id="reasonsText" placeholder="Ik wil helder wakker worden.&#10;Ik wil mijn geld aan dingen besteden die blijven."></textarea>
+    <div class="actions">
+      <button class="btn" type="submit">Opslaan</button>
+      <button class="btn ghost" type="button" id="reasCancel">Annuleren</button>
+    </div>
+  </form>
+</div>
+
+<!-- Back-up -->
+<div class="overlay" id="backupOverlay" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="bakTitle">
+    <h3 id="bakTitle">Back-up</h3>
+    <p class="hint">Ben je ingelogd, dan staan je gegevens veilig in de cloud en lopen al je apparaten gelijk. Niet ingelogd? Kopieer deze tekst dan af en toe naar je notities-app, en plak hem op je andere apparaat in dit vak en tik op Terugzetten.</p>
+    <textarea class="mono" id="backupText" spellcheck="false"></textarea>
+    <div class="actions">
+      <button class="btn" type="button" id="bakCopy">Kopieer</button>
+      <button class="btn secondary" type="button" id="bakRestore">Terugzetten</button>
+    </div>
+    <div class="actions">
+      <button class="btn danger" type="button" id="bakReset">Alles wissen en opnieuw beginnen</button>
+      <button class="btn ghost" type="button" id="bakClose">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  'use strict';
+  const DAY = 86400000;
+  const PRESETS = [
+    {id:'drank', label:'Drank', cost:40, period:'week'},
+    {id:'drugs', label:'Drugs', cost:30, period:'week'},
+    {id:'roken', label:'Roken', cost:60, period:'week'},
+    {id:'vapen', label:'Vapen', cost:15, period:'week'},
+    {id:'gokken', label:'Gokken', cost:50, period:'week'},
+    {id:'festivals', label:'Festivals en uitgaan', cost:1200, period:'year'},
+    {id:'snacks', label:'Snacks en fastfood', cost:25, period:'week'},
+  ];
+  const PERIODS = {week:7, month:30.4375, year:365.25};
+  const PERIOD_LABEL = {week:'p/week', month:'p/maand', year:'p/jaar'};
+  const MILESTONES = [[1,'1 dag'],[3,'3 dagen'],[7,'1 week'],[14,'2 weken'],[30,'1 maand'],[60,'2 maanden'],[90,'3 maanden'],[100,'100 dagen'],[182,'half jaar'],[365,'1 jaar'],[730,'2 jaar']];
+  const HEALTH = [
+    [20/1440, '20 minuten', 'Je hartslag en bloeddruk zakken terug naar normaal.'],
+    [8/24, '8 uur', 'Het koolmonoxide in je bloed is gehalveerd. Er komt weer meer zuurstof bij je organen.'],
+    [2, '48 uur', 'De nicotine is uit je lichaam. Smaak en geur worden merkbaar scherper.'],
+    [3, '72 uur', 'Je luchtwegen ontspannen. Ademen gaat lichter.'],
+    [14, '2 weken', 'Je bloedsomloop verbetert. Lopen en fietsen gaan makkelijker.'],
+    [30, '1 maand', 'Minder hoesten en kortademigheid. Je longen ruimen op.'],
+    [90, '3 maanden', 'Je longfunctie is merkbaar verbeterd.'],
+    [365, '1 jaar', 'Je risico op hartziekte is gehalveerd ten opzichte van toen je rookte.'],
+  ];
+
+  const pad = n => String(n).padStart(2,'0');
+  const toLocalISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const todayStart = () => { const d = new Date(); d.setHours(0,0,0,0); return toLocalISO(d); };
+  const eur = new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'});
+  const eur0 = new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  const dShort = new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'short'});
+  const dLong = new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric'});
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+  function newHabit(label, cost, period, id){
+    return {id: id || uid('h'), label, start: todayStart(), cost: Number(cost) || 0, period: period || 'week', banked:0, longest:0, relapses:0};
+  }
+  function defaults(){
+    return {
+      v:2, setup:false, updatedAt:0, estimates:true, reasonsSample:true, beaten:0,
+      habits:[],
+      goals:[
+        {id:'g1', name:'Weekend weg', price:400, bought:false, sample:true},
+        {id:'g2', name:'Nieuwe fiets', price:900, bought:false, sample:true},
+      ],
+      reasons:[
+        'Ik wil helder wakker worden, elke dag.',
+        'Ik wil mijn geld besteden aan dingen die blijven.',
+        'Ik wil trots zijn als ik in de spiegel kijk.',
+      ],
+      routine:{
+        items:['Op tijd opgestaan', 'Ontbeten', '1,5 liter water gedronken', 'Een half uur bewogen', 'Zelf gekookt', 'Op tijd naar bed, telefoon weg'],
+        done:{},
+        fullDays:0,
+      },
+    };
+  }
+  const MENU_START = new Date('2026-09-14T00:00');
+  const MENUS = [
+    {naam:'Menu 1', dagen:[
+      ['Ma','Linzencurry met rijst en spinazie','€ 2'],['Di','Volkorenpasta met tonijn, tomaat en ui','€ 2,50'],['Wo','Aardappelen, sperziebonen en een gebakken ei','€ 2'],
+      ['Do','Chili met bonen, mais en rijst','€ 2'],['Vr','Omelet met champignons en paprika, volkorenbrood','€ 2'],['Za','Wokgroente met tofu en noedels','€ 3'],['Zo','Ovenschotel met aardappel, prei en kaas','€ 3']]},
+    {naam:'Menu 2', dagen:[
+      ['Ma','Kikkererwtencurry met rijst','€ 2'],['Di','Bloemkool, aardappelpuree en een gehaktbal','€ 3'],['Wo','Pasta met broccoli, knoflook en kip','€ 3'],
+      ['Do','Tomatensoep met linzen en volkorenbrood','€ 2'],['Vr','Wraps met zwarte bonen, mais en sla','€ 2,50'],['Za','Gebakken rijst met ei, doperwten en wortel','€ 2'],['Zo','Stamppot boerenkool met rookworst','€ 3']]},
+    {naam:'Menu 3', dagen:[
+      ['Ma','Dahl van rode linzen met rijst','€ 2'],['Di','Pasta pesto met sperziebonen en kip','€ 3'],['Wo','Aardappelen, spruitjes en een ei','€ 2'],
+      ['Do','Bonenstoof met paprika en rijst','€ 2'],['Vr','Shakshuka: eieren in tomatensaus, met brood','€ 2,50'],['Za','Noedels met kip, wokgroente en pinda','€ 3'],['Zo','Ovenschotel zoete aardappel, kikkererwt en feta','€ 3,50']]},
+    {naam:'Menu 4', dagen:[
+      ['Ma','Couscous met geroosterde groente en kikkererwten','€ 2,50'],['Di','Macaroni met tomatensaus, gehakt en kaas','€ 3'],['Wo','Hutspot met wortel, ui en een gehaktbal','€ 2,50'],
+      ['Do','Linzensoep met prei en volkorenbrood','€ 2'],['Vr','Tosti\'s met kaas en tomaat, salade erbij','€ 2'],['Za','Kip-kerrie met rijst en doperwten','€ 3'],['Zo','Gevulde paprika\'s met rijst en bonen','€ 2,50']]},
+  ];
+  function menuWeek(now){
+    const d = new Date(now); d.setHours(0,0,0,0);
+    const dow = (d.getDay() + 6) % 7;
+    const monday = new Date(d); monday.setDate(d.getDate() - dow);
+    const weeks = Math.floor(Math.round((monday - MENU_START) / DAY) / 7);
+    const idx = ((weeks % MENUS.length) + MENUS.length) % MENUS.length;
+    return {idx, monday, dow};
+  }
+  function migrate(s){
+    const d = defaults();
+    const out = Object.assign(d, s || {});
+    let hs = (s && s.habits) || [];
+    if (!Array.isArray(hs)){
+      const labels = {drank:'Drank', drugs:'Drugs', roken:'Roken', festivals:'Festivals'};
+      hs = Object.keys(hs).map(k => Object.assign({id:k, label: labels[k] || k}, hs[k]));
+      out.setup = true;
+    }
+    out.habits = hs.filter(h => h && typeof h === 'object').map(h => Object.assign(newHabit(String(h.label || 'Gewoonte'), 0, 'week', h.id), h));
+    if (!Array.isArray(out.goals)) out.goals = [];
+    if (!Array.isArray(out.reasons)) out.reasons = [];
+    out.routine = Object.assign({}, d.routine, (s && s.routine) || {});
+    if (!Array.isArray(out.routine.items)) out.routine.items = d.routine.items;
+    if (!out.routine.done || typeof out.routine.done !== 'object') out.routine.done = {};
+    return out;
+  }
+
+  // ---------- state & persistence ----------
+  // Zonder database-koppeling: alleen dit apparaat. Met koppeling (eigen Claude-account): op al je apparaten.
+  let cacheKey = 'volhouden';
+  let state = load();
+  let docRef = null, writing = false, dirty = false;
+  function load(key){
+    try { const raw = localStorage.getItem(key || cacheKey); if (raw) return migrate(JSON.parse(raw)); } catch(e){}
+    return null;
+  }
+  state = state || defaults();
+  function cache(){
+    try { localStorage.setItem(cacheKey, JSON.stringify(state)); $('status').textContent = docRef ? 'Gesynchroniseerd op al je apparaten' : 'Opgeslagen op dit apparaat'; }
+    catch(e){ $('status').textContent = 'Opslaan lukt niet in deze browser. Maak een back-up.'; }
+  }
+  function commit(){
+    state.updatedAt = Date.now();
+    cache(); renderAll(); pushRemote();
+  }
+  async function pushRemote(){
+    if (!docRef) return;
+    if (writing){ dirty = true; return; }
+    writing = true;
+    try { await docRef.set(clone(state)); setStatus('Gesynchroniseerd op al je apparaten'); }
+    catch(e){ setStatus('Synchroniseren lukte niet, lokaal bewaard'); }
+    writing = false;
+    if (dirty){ dirty = false; pushRemote(); }
+  }
+  function setStatus(t){ $('status').textContent = t; }
+  function applySnapshot(snap){
+    if (snap.metadata.hasPendingWrites) return;
+    if (snap.exists){
+      const remote = snap.data();
+      if ((remote.updatedAt || 0) > (state.updatedAt || 0)){
+        state = migrate(clone(remote)); cache(); renderAll();
+        if (state.setup) $('setupOverlay').hidden = true;
+      } else if ((state.updatedAt || 0) > (remote.updatedAt || 0) && !snap.metadata.fromCache){
+        pushRemote();
+      }
+    } else if (!snap.metadata.fromCache && state.updatedAt){
+      pushRemote();
+    }
+    setStatus(snap.metadata.fromCache ? 'Offline. Synchroniseert zodra je weer verbinding hebt.' : 'Gesynchroniseerd op al je apparaten');
+  }
+  async function connect(){
+    const cfg = window.VOLHOUDEN_FIREBASE;
+    if (!cfg || !cfg.apiKey || /^VUL/.test(cfg.apiKey) || typeof firebase === 'undefined'){ setStatus('Opgeslagen op dit apparaat'); return; }
+    let auth, store;
+    try {
+      firebase.initializeApp(cfg);
+      auth = firebase.auth(); store = firebase.firestore();
+      try { await store.enablePersistence({synchronizeTabs:true}); } catch(e){}
+    } catch(e){ setStatus('Opgeslagen op dit apparaat'); return; }
+    $('btnLogin').hidden = false;
+    $('btnLogin').addEventListener('click', async () => {
+      const prov = new firebase.auth.GoogleAuthProvider();
+      try { await auth.signInWithPopup(prov); }
+      catch(e){
+        if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')){
+          try { await auth.signInWithRedirect(prov); } catch(e2){ toast('Inloggen lukte niet.'); }
+        } else if (!e || e.code !== 'auth/popup-closed-by-user') toast('Inloggen lukte niet.');
+      }
+    });
+    $('btnLogout').addEventListener('click', () => auth.signOut());
+    let unsub = null;
+    auth.onAuthStateChanged(user => {
+      if (unsub){ unsub(); unsub = null; }
+      docRef = null;
+      if (!user){
+        cacheKey = 'volhouden';
+        state = load() || defaults(); renderAll();
+        $('btnLogin').hidden = false; $('who').hidden = true;
+        setStatus('Opgeslagen op dit apparaat. Log in om te synchroniseren.');
+        if (!state.setup) openSetup();
+        return;
+      }
+      $('btnLogin').hidden = true; $('who').hidden = false;
+      $('whoName').textContent = user.displayName || user.email || 'jij';
+      const own = load('volhouden:' + user.uid);
+      cacheKey = 'volhouden:' + user.uid;
+      if (own) state = own;            // eerder op dit apparaat ingelogd: die kopie is leidend
+      else if (!state.setup) state = defaults();
+      cache(); renderAll();
+      docRef = store.collection('users').doc(user.uid).collection('tracker').doc('state');
+      unsub = docRef.onSnapshot({includeMetadataChanges:true}, applySnapshot, () => setStatus('Synchroniseren lukt niet. Lokaal bewaard.'));
+    });
+  }
+
+  // ---------- calculations ----------
+  const perDay = h => (Number(h.cost) || 0) / PERIODS[h.period || 'week'];
+  const startMs = h => { const t = new Date(h.start).getTime(); return isNaN(t) ? Date.now() : t; };
+  const elapsedMs = (h, now) => Math.max(0, now - startMs(h));
+  const daysSince = (h, now) => Math.floor(elapsedMs(h, now) / DAY);
+  const savedFor = (h, now) => (Number(h.banked) || 0) + perDay(h) * elapsedMs(h, now) / DAY;
+  const totalSaved = now => state.habits.reduce((s, h) => s + savedFor(h, now), 0);
+  const totalPerDay = () => state.habits.reduce((s, h) => s + perDay(h), 0);
+  const smokeHabit = () => state.habits.find(h => h.id === 'roken' || /rook|roken|sigaret|tabak|shag/i.test(h.label));
+  function nextMilestone(days){
+    let prev = 0;
+    for (const [d, label] of MILESTONES){ if (days < d) return {d, label, prev}; prev = d; }
+    const yrs = Math.floor(days / 365.25) + 1;
+    return {d: Math.round(yrs * 365.25), label: `${yrs} jaar`, prev};
+  }
+  function inDays(n){
+    if (n <= 0) return 'vandaag';
+    if (n === 1) return 'morgen';
+    if (n < 60) return `over ${n} dagen`;
+    if (n < 365) return `over ${Math.round(n / 30.4375)} maanden`;
+    const y = n / 365.25; return `over ${y < 2 ? '1 jaar' : Math.round(y) + ' jaar'}`;
+  }
+  function remainingText(ms){
+    const m = Math.ceil(ms / 60000);
+    if (m < 60) return `nog ${m} min`;
+    const h = Math.ceil(ms / 3600000);
+    if (h < 48) return `nog ${h} uur`;
+    const d = Math.ceil(ms / DAY);
+    if (d < 60) return `nog ${d} dagen`;
+    return `nog ${Math.round(d / 30.4375)} maanden`;
+  }
+
+  // ---------- render ----------
+  let lastDayKey = '';
+  function renderAll(){
+    const now = Date.now();
+    renderHero(now); renderRoutine(now); renderHabits(now); renderGoals(now); renderMilestones(now); renderHealth(now); renderMenu(now); renderReasons();
+    lastDayKey = dayKey(now);
+  }
+
+  const dateKey = now => { const d = new Date(now); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+  function pruneRoutine(now){
+    const keep = new Set(); for (let i = 0; i < 14; i++) keep.add(dateKey(now - i * DAY));
+    for (const k of Object.keys(state.routine.done)) if (!keep.has(k)) delete state.routine.done[k];
+  }
+  function routineStreak(now){
+    const n = state.routine.items.length; if (!n) return 0;
+    let streak = 0;
+    const full = k => (state.routine.done[k] || []).length >= n;
+    let i = full(dateKey(now)) ? 0 : 1;
+    for (; i < 14; i++){ if (full(dateKey(now - i * DAY))) streak++; else break; }
+    return streak;
+  }
+  function renderRoutine(now){
+    const r = state.routine; const key = dateKey(now);
+    const done = new Set(r.done[key] || []);
+    const n = r.items.length, k = r.items.filter((_, i) => done.has(i)).length;
+    const streak = routineStreak(now);
+    const el = $('routine');
+    el.className = 'routine' + (n && k === n ? ' full' : '');
+    el.innerHTML = (n ? `<div class="prog"><span><b class="num">${k}</b> van ${n} gedaan</span><span>${streak ? `${streak} ${streak === 1 ? 'volle dag' : 'volle dagen'} op rij` : (k === n ? 'Volle dag. Zo bouw je een ritme.' : '')}</span></div>
+      <div class="bar"><i style="width:${n ? (k / n * 100).toFixed(1) : 0}%"></i></div>` : '<p class="hint">Nog geen dagritme. Tik op Bewerken.</p>')
+      + r.items.map((t, i) => `<label class="task ${done.has(i) ? 'done' : ''}"><input type="checkbox" id="task-${i}" data-task="${i}" ${done.has(i) ? 'checked' : ''}><span class="box"></span><span>${esc(t)}</span></label>`).join('');
+    el.querySelectorAll('[data-task]').forEach(c => c.addEventListener('change', () => {
+      const i = Number(c.dataset.task); const key2 = dateKey(Date.now());
+      const set = new Set(state.routine.done[key2] || []);
+      if (c.checked) set.add(i); else set.delete(i);
+      state.routine.done[key2] = [...set].sort((a, b) => a - b);
+      pruneRoutine(Date.now());
+      commit();
+      if (set.size === state.routine.items.length && c.checked) toast('Volle dag. Goed bezig.');
+    }));
+  }
+  function renderMenu(now){
+    const {idx, monday, dow} = menuWeek(now);
+    const m = MENUS[idx];
+    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    $('menuTitle').textContent = `${m.naam} van ${MENUS.length} · ${dShort.format(monday)} t/m ${dShort.format(sunday)}`;
+    $('menu').innerHTML = m.dagen.map(([d, dish, cost], i) => `<li class="${i === dow ? 'today' : ''}"><span class="d">${d}</span><span>${dish}</span><span class="c num">${cost} p.p.</span></li>`).join('');
+    const next = MENUS[(idx + 1) % MENUS.length];
+    $('menuNext').textContent = dow >= 5
+      ? `Vanaf maandag: ${next.naam}. Haal de boodschappen daarvoor dit weekend.`
+      : `Volgende week: ${next.naam}. Na ${MENUS.length} weken begint de rotatie opnieuw.`;
+  }
+  const dayKey = now => state.habits.map(h => daysSince(h, now)).join('|') + '|' + new Date(now).getDate() + '|' + new Date(now).getHours();
+
+  function renderHero(now){
+    $('money').textContent = eur.format(totalSaved(now));
+    $('perDay').textContent = eur.format(totalPerDay());
+    $('beaten').textContent = state.beaten > 0 ? `${state.beaten} ${state.beaten === 1 ? 'moeilijk moment' : 'moeilijke momenten'} doorstaan` : '';
+    const earliest = state.habits.length ? Math.min(...state.habits.map(startMs)) : now;
+    const days = Math.floor(Math.max(0, now - earliest) / DAY);
+    $('since').textContent = days === 0 ? 'Vandaag begonnen' : `Sinds ${dLong.format(new Date(earliest))}`;
+    $('estimateHint').hidden = !state.estimates || !state.habits.length;
+  }
+
+  function renderHabits(now){
+    if (!state.habits.length){
+      $('habits').innerHTML = '<p class="hint">Nog geen gewoontes. Tik rechtsboven op Instellen om er een toe te voegen.</p>';
+      return;
+    }
+    $('habits').innerHTML = state.habits.map(h => {
+      const days = daysSince(h, now);
+      const nm = nextMilestone(days);
+      const frac = Math.min(1, (days - nm.prev) / (nm.d - nm.prev));
+      const record = (h.longest || 0) > days ? `<span class="chip">record ${h.longest} d</span>` : '';
+      return `<button class="habit" type="button" data-habit="${esc(h.id)}" aria-label="${esc(h.label)}, ${days} dagen, instellingen">
+        <div class="name"><span>${esc(h.label)}</span>${record}</div>
+        <div class="days num">${days}<small>${days === 1 ? 'dag' : 'dagen'}</small></div>
+        <div class="meta">${days === 0 ? 'vandaag begonnen' : 'sinds ' + dShort.format(new Date(startMs(h)))} · ${eur0.format(h.cost)} ${PERIOD_LABEL[h.period] || ''}</div>
+        <div class="bar"><i style="width:${(frac * 100).toFixed(1)}%"></i></div>
+        <div class="next">${nm.label} ${inDays(nm.d - days)}</div>
+      </button>`;
+    }).join('');
+    document.querySelectorAll('.habit').forEach(b => b.addEventListener('click', () => openSettings(b.dataset.habit)));
+  }
+
+  function renderGoals(now){
+    const el = $('goals');
+    const goals = state.goals;
+    if (!goals.length){ el.innerHTML = '<p class="hint">Nog geen doelen. Zet er een neer: iets concreets dat je met dit geld gaat doen.</p>'; return; }
+    const spent = goals.filter(g => g.bought).reduce((s, g) => s + Number(g.price), 0);
+    let available = Math.max(0, totalSaved(now) - spent);
+    const pd = totalPerDay();
+    let cumulative = 0;
+    const open = goals.filter(g => !g.bought), bought = goals.filter(g => g.bought);
+    const html = open.map(g => {
+      const price = Number(g.price) || 0;
+      const fill = Math.min(price, available); available -= fill;
+      cumulative += price;
+      const reached = fill >= price && price > 0;
+      const pct = price ? (fill / price * 100) : 0;
+      let eta = '';
+      if (!reached && pd > 0){
+        const need = cumulative - (Math.max(0, totalSaved(now) - spent));
+        const days = Math.ceil(need / pd);
+        eta = `haalbaar ${inDays(days)} (${dShort.format(new Date(now + days * DAY))})`;
+      } else if (!reached) eta = 'vul eerst je bedragen in';
+      return `<div class="goal ${reached ? 'reached' : ''}">
+        <div class="row"><div class="title"><span>${esc(g.name)}</span>${g.sample ? '<span class="chip">voorbeeld</span>' : ''}${reached ? '<span class="chip ok">haalbaar</span>' : ''}</div>
+          <div class="amt num">${eur0.format(fill)} / ${eur0.format(price)}</div></div>
+        <div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div>
+        <div class="foot"><span>${reached ? 'Je hebt dit bij elkaar. Gun het jezelf.' : eta}</span>
+          <span class="acts">${reached ? `<button class="link" type="button" data-buy="${g.id}">Gekocht</button>` : ''}<button class="x" type="button" data-del="${g.id}" aria-label="Doel verwijderen">×</button></span></div>
+      </div>`;
+    }).join('') + bought.map(g => `<div class="goal bought">
+        <div class="row"><div class="title"><span>${esc(g.name)}</span><span class="chip ok">gekocht</span></div><div class="amt num">${eur0.format(g.price)}</div></div>
+        <div class="foot"><span>Betaald van geld dat anders op was gegaan.</span><span class="acts"><button class="link" type="button" data-unbuy="${g.id}">Ongedaan</button><button class="x" type="button" data-del="${g.id}" aria-label="Doel verwijderen">×</button></span></div>
+      </div>`).join('');
+    el.innerHTML = html;
+    el.querySelectorAll('[data-buy]').forEach(b => b.addEventListener('click', () => { const g = state.goals.find(x => x.id === b.dataset.buy); if (g){ g.bought = true; g.sample = false; commit(); toast('Gefeliciteerd. Dat heb je zelf verdiend.'); } }));
+    el.querySelectorAll('[data-unbuy]').forEach(b => b.addEventListener('click', () => { const g = state.goals.find(x => x.id === b.dataset.unbuy); if (g){ g.bought = false; commit(); } }));
+    el.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => confirmTwice(b, 'Zeker? Tik nog eens', () => { state.goals = state.goals.filter(x => x.id !== b.dataset.del); commit(); })));
+  }
+
+  function renderMilestones(now){
+    $('milestones').innerHTML = state.habits.length ? state.habits.map(h => {
+      const days = daysSince(h, now);
+      const nm = nextMilestone(days);
+      const got = MILESTONES.filter(([d]) => days >= d).map(([, l]) => `<span class="chip ok">${l}</span>`).join('');
+      return `<div class="mrow"><span class="h">${esc(h.label)}</span><span>${nm.label} ${inDays(nm.d - days)}</span><span class="d">${dShort.format(new Date(startMs(h) + nm.d * DAY))}</span>${got ? `<div class="got">${got}</div>` : ''}</div>`;
+    }).join('') : '<p class="hint">Zodra je een gewoonte hebt ingesteld, zie je hier je volgende mijlpaal.</p>';
+  }
+
+  function renderHealth(now){
+    const h = smokeHabit();
+    $('healthSec').hidden = !h;
+    if (!h) return;
+    const el = elapsedMs(h, now);
+    let nextMarked = false;
+    $('health').innerHTML = HEALTH.map(([d, when, what]) => {
+      const ms = d * DAY;
+      const done = el >= ms;
+      let cls = done ? 'done' : '';
+      let eta = '';
+      if (!done && !nextMarked){ cls = 'next'; nextMarked = true; eta = `<div class="eta">${remainingText(ms - el)}</div>`; }
+      return `<li class="${cls}"><div class="when">${when}</div><div class="what">${what}</div>${eta}</li>`;
+    }).join('');
+  }
+
+  function renderReasons(){
+    $('reasonsHint').hidden = !state.reasonsSample;
+    $('reasons').innerHTML = state.reasons.length
+      ? state.reasons.map(r => `<li class="${state.reasonsSample ? 'sample' : ''}">${esc(r)}</li>`).join('')
+      : '<li class="sample">Nog geen redenen. Tik op Bewerken en schrijf op waarom je dit doet.</li>';
+  }
+
+  // ---------- live tick ----------
+  setInterval(() => {
+    const now = Date.now();
+    $('money').textContent = eur.format(totalSaved(now));
+    if (dayKey(now) !== lastDayKey) renderAll();
+  }, 200);
+
+  // ---------- eerste keer ----------
+  function openSetup(){
+    $('setupOpts').innerHTML = PRESETS.map(p => `<label class="task"><input type="checkbox" id="pre-${p.id}" data-preset="${p.id}"><span class="box"></span><span>${esc(p.label)}</span></label>`).join('');
+    $('setupOpts').querySelectorAll('[data-preset]').forEach(c => c.addEventListener('change', () => c.closest('.task').classList.toggle('done', c.checked)));
+    $('setupErr').hidden = true;
+    $('setupOverlay').hidden = false;
+  }
+  $('setupForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const chosen = PRESETS.filter(p => $('pre-' + p.id).checked).map(p => newHabit(p.label, p.cost, p.period, p.id));
+    const custom = $('setupCustom').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 8).map(l => newHabit(l.slice(0, 30), 0, 'week'));
+    const all = chosen.concat(custom);
+    if (!all.length){ $('setupErr').hidden = false; return; }
+    state.habits = all; state.setup = true; state.estimates = true;
+    $('setupOverlay').hidden = true;
+    commit();
+    openSettings();
+  });
+
+  // ---------- goals form ----------
+  $('btnAddGoal').addEventListener('click', () => { $('goalForm').hidden = false; $('goalName').focus(); });
+  $('goalCancel').addEventListener('click', () => { $('goalForm').hidden = true; });
+  $('goalForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('goalName').value.trim(); const price = Number($('goalPrice').value);
+    if (!name || !(price > 0)) return;
+    state.goals.push({id: 'g' + Date.now().toString(36), name, price, bought:false, sample:false});
+    $('goalName').value = ''; $('goalPrice').value = ''; $('goalForm').hidden = true;
+    commit();
+  });
+
+  // ---------- settings ----------
+  function openSettings(focusId){
+    $('habitFields').innerHTML = state.habits.map(h => {
+      const dateVal = String(h.start).slice(0, 10);
+      return `<fieldset id="fs-${esc(h.id)}"><legend>${esc(h.label)}</legend>
+        <div class="inline">
+          <label>Gestopt op<input type="date" id="start-${esc(h.id)}" value="${dateVal}" max="${todayStart().slice(0,10)}" required></label>
+          <label>Kosten (€)<input type="number" id="cost-${esc(h.id)}" value="${Number(h.cost)}" min="0" step="1" inputmode="numeric" required></label>
+          <label>Per<select id="period-${esc(h.id)}"><option value="week" ${h.period==='week'?'selected':''}>week</option><option value="month" ${h.period==='month'?'selected':''}>maand</option><option value="year" ${h.period==='year'?'selected':''}>jaar</option></select></label>
+        </div>
+        <div class="relapse"><span>${h.relapses ? `${h.relapses}× opnieuw begonnen · record ${h.longest} dagen` : 'Gestruikeld? Geen ramp. Begin gewoon opnieuw.'}</span>
+          <button class="btn danger" type="button" data-relapse="${esc(h.id)}">Opnieuw vanaf nu</button></div>
+        <div class="relapse"><span>Niet meer bijhouden?</span><button class="link" type="button" data-remove="${esc(h.id)}">Verwijderen</button></div>
+      </fieldset>`;
+    }).join('') || '<p class="hint">Nog geen gewoontes. Voeg er hieronder een toe.</p>';
+    $('habitFields').querySelectorAll('[data-relapse]').forEach(b => b.addEventListener('click', () => confirmTwice(b, 'Zeker? Tik nog eens', () => relapse(b.dataset.relapse))));
+    $('habitFields').querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => confirmTwice(b, 'Zeker? Tik nog eens', () => {
+      readSettingsFields();
+      state.habits = state.habits.filter(h => h.id !== b.dataset.remove);
+      commit(); openSettings();
+    })));
+    $('settingsOverlay').hidden = false;
+    if (focusId){ const fs = $('fs-' + focusId); if (fs){ fs.scrollIntoView({block:'nearest'}); const i = $('cost-' + focusId); if (i) i.focus(); } }
+  }
+  function readSettingsFields(){
+    for (const h of state.habits){
+      const s = $('start-' + h.id), c = $('cost-' + h.id), p = $('period-' + h.id);
+      if (!s || !c || !p) continue;
+      const d = s.value;
+      if (d && d !== String(h.start).slice(0, 10)) h.start = d + 'T00:00';
+      h.cost = Math.max(0, Number(c.value) || 0);
+      h.period = p.value;
+    }
+  }
+  function relapse(id){
+    const h = state.habits.find(x => x.id === id); if (!h) return;
+    const now = Date.now();
+    h.banked = savedFor(h, now);
+    h.longest = Math.max(h.longest || 0, daysSince(h, now));
+    h.relapses = (h.relapses || 0) + 1;
+    h.start = toLocalISO(new Date(now));
+    $('settingsOverlay').hidden = true;
+    commit();
+    toast('Opnieuw begonnen. Je bespaarde geld blijft staan.');
+  }
+  $('btnSettings').addEventListener('click', () => openSettings());
+  $('setCancel').addEventListener('click', () => { $('settingsOverlay').hidden = true; });
+  $('addHabitBtn').addEventListener('click', () => {
+    const name = $('addHabitName').value.trim().slice(0, 30);
+    if (!name){ $('addHabitName').focus(); return; }
+    readSettingsFields();
+    const preset = PRESETS.find(p => p.label.toLowerCase() === name.toLowerCase());
+    const h = preset ? newHabit(preset.label, preset.cost, preset.period, preset.id) : newHabit(name, 0, 'week');
+    if (state.habits.some(x => x.id === h.id)) h.id = uid('h');
+    state.habits.push(h);
+    $('addHabitName').value = '';
+    commit(); openSettings(h.id);
+  });
+  $('settingsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    readSettingsFields();
+    state.estimates = false;
+    $('settingsOverlay').hidden = true;
+    commit();
+    toast('Opgeslagen');
+  });
+
+  // ---------- reasons ----------
+  $('btnEditReasons').addEventListener('click', () => { $('reasonsText').value = state.reasonsSample ? '' : state.reasons.join('\n'); $('reasonsOverlay').hidden = false; $('reasonsText').focus(); });
+  $('reasCancel').addEventListener('click', () => { $('reasonsOverlay').hidden = true; });
+  $('reasonsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const lines = $('reasonsText').value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (lines.length){ state.reasons = lines; state.reasonsSample = false; }
+    $('reasonsOverlay').hidden = true;
+    commit();
+  });
+
+  // ---------- routine ----------
+  $('btnEditRoutine').addEventListener('click', () => { $('routineText').value = state.routine.items.join('\n'); $('routineOverlay').hidden = false; $('routineText').focus(); });
+  $('routCancel').addEventListener('click', () => { $('routineOverlay').hidden = true; });
+  $('routineForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const lines = $('routineText').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 12);
+    state.routine.items = lines; state.routine.done = {};
+    $('routineOverlay').hidden = true;
+    commit();
+  });
+
+  // ---------- back-up ----------
+  $('btnBackup').addEventListener('click', () => { $('backupText').value = JSON.stringify(state); $('backupOverlay').hidden = false; });
+  $('bakClose').addEventListener('click', () => { $('backupOverlay').hidden = true; });
+  $('bakCopy').addEventListener('click', async () => {
+    const t = $('backupText'); t.value = JSON.stringify(state);
+    try { await navigator.clipboard.writeText(t.value); toast('Gekopieerd. Plak het in je notities.'); }
+    catch(e){ t.focus(); t.select(); toast('Selecteer de tekst en kopieer hem zelf.'); }
+  });
+  $('bakRestore').addEventListener('click', () => {
+    let parsed = null;
+    try { parsed = JSON.parse($('backupText').value.trim()); } catch(e){}
+    if (!parsed || typeof parsed !== 'object' || !parsed.habits){ toast('Dit is geen geldige back-up.'); return; }
+    state = migrate(parsed); state.setup = true;
+    $('backupOverlay').hidden = true;
+    commit();
+    toast('Back-up teruggezet.');
+  });
+  $('bakReset').addEventListener('click', () => confirmTwice($('bakReset'), 'Zeker? Alles gaat weg. Tik nog eens', () => {
+    try { localStorage.removeItem(cacheKey); } catch(e){}
+    state = defaults();
+    $('backupOverlay').hidden = true;
+    commit();
+    openSetup();
+  }));
+
+  // ---------- SOS ----------
+  let timerId = null;
+  function openSOS(){
+    const now = Date.now();
+    $('stake').innerHTML = state.habits.map(h => `<div>${esc(h.label)}<b class="num">${daysSince(h, now)} ${daysSince(h, now) === 1 ? 'dag' : 'dagen'}</b></div>`).join('')
+      + `<div>Niet uitgegeven<b class="num">${eur0.format(totalSaved(now))}</b></div>`
+      + `<div>Doorstaan<b class="num">${state.beaten}×</b></div>`;
+    $('sosReasons').innerHTML = state.reasons.map(r => `<li>${esc(r)}</li>`).join('') || '<li>Schrijf je redenen op onder “Waarom ik dit doe”.</li>';
+    const end = now + 10 * 60000;
+    const t = $('timer'); t.classList.remove('done');
+    clearInterval(timerId);
+    const tick = () => {
+      const left = Math.max(0, end - Date.now());
+      const m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
+      t.textContent = left ? `${m}:${pad(s)}` : 'De golf is voorbij.';
+      if (!left){ t.classList.add('done'); clearInterval(timerId); }
+    };
+    tick(); timerId = setInterval(tick, 500);
+    $('sosOverlay').hidden = false;
+    $('sosHold').focus();
+  }
+  function closeSOS(){ $('sosOverlay').hidden = true; clearInterval(timerId); }
+  $('btnSOS').addEventListener('click', openSOS);
+  $('sosClose').addEventListener('click', closeSOS);
+  $('sosHold').addEventListener('click', () => { state.beaten = (state.beaten || 0) + 1; closeSOS(); commit(); toast('Doorstaan. Dat telt.'); });
+
+  // overlays: close on backdrop (behalve het instelscherm bij de eerste keer)
+  document.querySelectorAll('.overlay:not(.locked)').forEach(o => o.addEventListener('click', e => { if (e.target === o){ o.hidden = true; clearInterval(timerId); } }));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.overlay:not(.locked)').forEach(o => { o.hidden = true; }); });
+
+  // ---------- helpers ----------
+  function confirmTwice(btn, text, fn){
+    if (btn.dataset.armed){ delete btn.dataset.armed; btn.textContent = btn.dataset.orig || btn.textContent; fn(); return; }
+    const orig = btn.textContent; btn.dataset.armed = '1'; btn.dataset.orig = orig; btn.textContent = text;
+    setTimeout(() => { if (btn.isConnected && btn.dataset.armed){ delete btn.dataset.armed; btn.textContent = orig; } }, 4000);
+  }
+  let toastEl = null, toastT = null;
+  function toast(msg){
+    if (!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg; toastEl.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => { toastEl.hidden = true; }, 2600);
+  }
+
+  renderAll();
+  if (!state.setup) openSetup();
+  connect();
+})();
+</script>
+</body>
+</html>
