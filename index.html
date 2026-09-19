@@ -168,6 +168,31 @@ label{font-size:13px; font-weight:600; color:var(--ink2); display:flex; flex-dir
 .menu li .c{font-size:13px; color:var(--ink3); white-space:nowrap}
 .menu li.today{border-color:var(--accent); background:var(--accent-soft)}
 .menu li.today .d{color:var(--accent)}
+.menu li{display:block; padding:0}
+.menu li .head{display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:baseline; width:100%; padding:9px 14px; background:none; border:0; text-align:left; font:inherit; color:inherit}
+.menu li .head .caret{font-size:11px; color:var(--ink3); margin-left:6px}
+.menu li.open{border-color:var(--accent)}
+.recipe{padding:4px 14px 14px; display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--line)}
+.recipe .meta{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--ink3); padding-top:10px}
+.recipe h4{margin:0; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink2)}
+.ings{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px}
+.ings li{display:grid; grid-template-columns:72px 1fr; gap:8px; font-size:15px; align-items:baseline}
+.ings li .q{color:var(--ink3); font-size:13px; font-variant-numeric:tabular-nums}
+.ings li.basis{color:var(--ink3)}
+.ings li a{color:inherit; text-decoration:none; border-bottom:1px dashed var(--line)}
+.ings li a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.steps{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:6px; font-size:15px}
+.steps li::marker{color:var(--accent); font-weight:700}
+.recipe .acts{display:flex; flex-wrap:wrap; gap:8px}
+.recipe .acts .btn{padding:10px 14px; font-size:14px}
+.recipe .acts a.btn{text-decoration:none; display:inline-flex; align-items:center}
+.menuhead{display:flex; justify-content:space-between; align-items:center; gap:10px; margin:18px 0 6px; flex-wrap:wrap}
+.menuhead .subh{margin:0}
+.seg{display:inline-flex; background:var(--surface2); border-radius:999px; padding:3px; gap:2px}
+.seg button{border:0; background:none; border-radius:999px; padding:5px 12px; font-size:13px; font-weight:600; color:var(--ink2)}
+.seg button.on{background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.weekacts{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.weekacts .btn{padding:10px 14px; font-size:14px}
 .staples{display:flex; flex-wrap:wrap; gap:6px}
 .staples span{font-size:13px; padding:5px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--line); color:var(--ink2)}
 @media (max-width:380px){ .meal{grid-template-columns:1fr} }
@@ -283,9 +308,11 @@ textarea{min-height:160px; resize:vertical}
       <div class="meal"><span class="when">Avond</span><span>Half bord groente, kwart aardappel, rijst of volkorenpasta, kwart eiwit: bonen, linzen, ei, kip, vis of tofu.</span></div>
       <div class="meal"><span class="when">Tussendoor</span><span>Fruit, een handje ongezouten noten, kwark of yoghurt. Water of thee in plaats van frisdrank of bier.</span></div>
     </div>
-    <h3 class="subh" id="menuTitle">Weekmenu</h3>
-    <p class="hint">Vier weekmenu's die rouleren: afwisseling zonder nadenken. Vandaag staat gemarkeerd.</p>
+    <div class="menuhead"><h3 class="subh" id="menuTitle">Weekmenu</h3>
+      <div class="seg" role="group" aria-label="Supermarkt"><button type="button" id="superAh" data-super="ah">AH</button><button type="button" id="superJumbo" data-super="jumbo">Jumbo</button></div></div>
+    <p class="hint">Vier weekmenu's die rouleren, elk recept voor 1 persoon. Tik op een dag voor het recept. Tik op een ingrediënt om het bij je supermarkt te zoeken en in je eigen mandje te leggen.</p>
     <ol class="menu" id="menu"></ol>
+    <div class="weekacts"><button class="btn secondary" type="button" id="btnWeekList">Kopieer boodschappen van deze week</button><a class="btn secondary" id="lnkSuperList" href="https://www.ah.nl/mijnlijst" target="_blank" rel="noopener">Open mijn lijst bij AH</a></div>
     <p class="hint" id="menuNext" style="margin-top:8px"></p>
     <h3 class="subh">Vaste boodschappen</h3>
     <p class="hint">Hiermee kook je alles hierboven. Grote verpakkingen en het huismerk zijn per kilo het goedkoopst. Doe de boodschappen op een vast moment, bijvoorbeeld zaterdagochtend.</p>
@@ -403,6 +430,7 @@ textarea{min-height:160px; resize:vertical}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="recepten.js"></script>
 <script>
 (function(){
   'use strict';
@@ -447,7 +475,7 @@ textarea{min-height:160px; resize:vertical}
   }
   function defaults(){
     return {
-      v:2, setup:false, updatedAt:0, estimates:true, reasonsSample:true, beaten:0,
+      v:2, setup:false, updatedAt:0, estimates:true, reasonsSample:true, beaten:0, super:'ah', openDay:-1,
       habits:[],
       goals:[
         {id:'g1', name:'Weekend weg', price:400, bought:false, sample:true},
@@ -465,27 +493,20 @@ textarea{min-height:160px; resize:vertical}
       },
     };
   }
-  const MENU_START = new Date('2026-09-14T00:00');
-  const MENUS = [
-    {naam:'Menu 1', dagen:[
-      ['Ma','Linzencurry met rijst en spinazie','€ 2'],['Di','Volkorenpasta met tonijn, tomaat en ui','€ 2,50'],['Wo','Aardappelen, sperziebonen en een gebakken ei','€ 2'],
-      ['Do','Chili met bonen, mais en rijst','€ 2'],['Vr','Omelet met champignons en paprika, volkorenbrood','€ 2'],['Za','Wokgroente met tofu en noedels','€ 3'],['Zo','Ovenschotel met aardappel, prei en kaas','€ 3']]},
-    {naam:'Menu 2', dagen:[
-      ['Ma','Kikkererwtencurry met rijst','€ 2'],['Di','Bloemkool, aardappelpuree en een gehaktbal','€ 3'],['Wo','Pasta met broccoli, knoflook en kip','€ 3'],
-      ['Do','Tomatensoep met linzen en volkorenbrood','€ 2'],['Vr','Wraps met zwarte bonen, mais en sla','€ 2,50'],['Za','Gebakken rijst met ei, doperwten en wortel','€ 2'],['Zo','Stamppot boerenkool met rookworst','€ 3']]},
-    {naam:'Menu 3', dagen:[
-      ['Ma','Dahl van rode linzen met rijst','€ 2'],['Di','Pasta pesto met sperziebonen en kip','€ 3'],['Wo','Aardappelen, spruitjes en een ei','€ 2'],
-      ['Do','Bonenstoof met paprika en rijst','€ 2'],['Vr','Shakshuka: eieren in tomatensaus, met brood','€ 2,50'],['Za','Noedels met kip, wokgroente en pinda','€ 3'],['Zo','Ovenschotel zoete aardappel, kikkererwt en feta','€ 3,50']]},
-    {naam:'Menu 4', dagen:[
-      ['Ma','Couscous met geroosterde groente en kikkererwten','€ 2,50'],['Di','Macaroni met tomatensaus, gehakt en kaas','€ 3'],['Wo','Hutspot met wortel, ui en een gehaktbal','€ 2,50'],
-      ['Do','Linzensoep met prei en volkorenbrood','€ 2'],['Vr','Tosti\'s met kaas en tomaat, salade erbij','€ 2'],['Za','Kip-kerrie met rijst en doperwten','€ 3'],['Zo','Gevulde paprika\'s met rijst en bonen','€ 2,50']]},
-  ];
+  const RECEPTEN = (window.VOLHOUDEN_RECEPTEN && window.VOLHOUDEN_RECEPTEN.menus) ? window.VOLHOUDEN_RECEPTEN : {start:'2026-09-14', menus:[]};
+  const MENU_START = new Date(RECEPTEN.start + 'T00:00');
+  const MENUS = RECEPTEN.menus;
+  const SUPERS = {
+    ah:    {naam:'AH',    zoek: q => 'https://www.ah.nl/zoeken?query=' + encodeURIComponent(q), lijst:'https://www.ah.nl/mijnlijst', lijstLabel:'Open mijn lijst bij AH'},
+    jumbo: {naam:'Jumbo', zoek: q => 'https://www.jumbo.com/zoeken?searchType=keyword&searchTerms=' + encodeURIComponent(q), lijst:'https://www.jumbo.com/', lijstLabel:'Open Jumbo'},
+  };
   function menuWeek(now){
     const d = new Date(now); d.setHours(0,0,0,0);
     const dow = (d.getDay() + 6) % 7;
     const monday = new Date(d); monday.setDate(d.getDate() - dow);
     const weeks = Math.floor(Math.round((monday - MENU_START) / DAY) / 7);
-    const idx = ((weeks % MENUS.length) + MENUS.length) % MENUS.length;
+    const n = Math.max(1, MENUS.length);
+    const idx = ((weeks % n) + n) % n;
     return {idx, monday, dow};
   }
   function migrate(s){
@@ -666,17 +687,63 @@ textarea{min-height:160px; resize:vertical}
       if (set.size === state.routine.items.length && c.checked) toast('Volle dag. Goed bezig.');
     }));
   }
+  let openDay = -1;
+  const shopItems = dag => (dag.ing || []).filter(x => !x[2]).map(x => x[1]);
   function renderMenu(now){
+    const sup = SUPERS[state.super] || SUPERS.ah;
+    document.querySelectorAll('[data-super]').forEach(b => b.classList.toggle('on', b.dataset.super === (SUPERS[state.super] ? state.super : 'ah')));
+    const lnk = $('lnkSuperList'); lnk.href = sup.lijst; lnk.textContent = sup.lijstLabel;
+    if (!MENUS.length){ $('menuTitle').textContent = 'Weekmenu'; $('menu').innerHTML = '<li><div class="head"><span></span><span>Recepten konden niet geladen worden.</span></div></li>'; $('menuNext').textContent = ''; return; }
     const {idx, monday, dow} = menuWeek(now);
     const m = MENUS[idx];
     const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
     $('menuTitle').textContent = `${m.naam} van ${MENUS.length} · ${dShort.format(monday)} t/m ${dShort.format(sunday)}`;
-    $('menu').innerHTML = m.dagen.map(([d, dish, cost], i) => `<li class="${i === dow ? 'today' : ''}"><span class="d">${d}</span><span>${dish}</span><span class="c num">${cost} p.p.</span></li>`).join('');
+    $('menu').innerHTML = m.dagen.map((d, i) => {
+      const open = i === openDay;
+      const gerecht = d.gerecht, kosten = d.kosten || '';
+      let body = '';
+      if (open){
+        const ings = (d.ing || []).map(([q, n, basis]) => `<li class="${basis ? 'basis' : ''}"><span class="q">${esc(q)}</span><a href="${sup.zoek(n)}" target="_blank" rel="noopener" title="Zoek bij ${sup.naam}">${esc(n)}</a></li>`).join('');
+        const steps = (d.stappen || []).map(t => `<li>${esc(t)}</li>`).join('');
+        const extra = d.ahLijst && state.super === 'ah' ? `<a class="btn" href="${esc(d.ahLijst)}" target="_blank" rel="noopener">Zet in mijn AH-lijst</a>` : '';
+        body = `<div class="recipe">
+          <div class="meta"><span>${d.tijd ? d.tijd + ' minuten' : ''}</span><span>1 persoon</span><span>${esc(kosten)} p.p.</span></div>
+          <h4>Ingrediënten</h4>
+          <ul class="ings">${ings}</ul>
+          <p class="hint" style="margin:0">Grijs staat al op je vaste lijst of in je kast. Tik op een ingrediënt om het bij ${sup.naam} te zoeken.</p>
+          <h4>Bereiding</h4>
+          <ol class="steps">${steps}</ol>
+          <div class="acts">${extra}<button class="btn secondary" type="button" data-copy-day="${i}">Kopieer boodschappen</button><a class="btn secondary" href="${sup.lijst}" target="_blank" rel="noopener">${sup.lijstLabel}</a></div>
+        </div>`;
+      }
+      return `<li class="${i === dow ? 'today' : ''} ${open ? 'open' : ''}">
+        <button class="head" type="button" data-day="${i}" aria-expanded="${open}"><span class="d">${d.dag}</span><span>${esc(gerecht)}<span class="caret">${open ? '▲' : '▼'}</span></span><span class="c num">${esc(kosten)} p.p.</span></button>${body}</li>`;
+    }).join('');
+    $('menu').querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => {
+      const i = Number(b.dataset.day); openDay = openDay === i ? -1 : i; renderMenu(Date.now());
+      if (openDay >= 0){ const li = b.closest('li'); if (li) li.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+    }));
+    $('menu').querySelectorAll('[data-copy-day]').forEach(b => b.addEventListener('click', () => {
+      const d = m.dagen[Number(b.dataset.copyDay)];
+      copyText((d.ing || []).filter(x => !x[2]).map(([q, n]) => (q ? q + ' ' : '') + n).join('\n'), `Boodschappen voor ${d.dag.toLowerCase()} gekopieerd. Plak ze in de ${sup.naam}-app.`);
+    }));
     const next = MENUS[(idx + 1) % MENUS.length];
     $('menuNext').textContent = dow >= 5
       ? `Vanaf maandag: ${next.naam}. Haal de boodschappen daarvoor dit weekend.`
       : `Volgende week: ${next.naam}. Na ${MENUS.length} weken begint de rotatie opnieuw.`;
   }
+  async function copyText(text, msg){
+    try { await navigator.clipboard.writeText(text); toast(msg); }
+    catch(e){ $('backupText').value = text; $('backupOverlay').hidden = false; toast('Kopiëren lukte niet. Selecteer de tekst zelf.'); }
+  }
+  document.querySelectorAll('[data-super]').forEach(b => b.addEventListener('click', () => { state.super = b.dataset.super; commit(); }));
+  $('btnWeekList').addEventListener('click', () => {
+    if (!MENUS.length) return;
+    const {idx} = menuWeek(Date.now());
+    const seen = new Set(); const lines = [];
+    for (const d of MENUS[idx].dagen) for (const n of shopItems(d)){ const k = n.toLowerCase(); if (!seen.has(k)){ seen.add(k); lines.push(n); } }
+    copyText(lines.join('\n'), `${lines.length} boodschappen gekopieerd. Plak ze in de ${(SUPERS[state.super] || SUPERS.ah).naam}-app.`);
+  });
   const dayKey = now => state.habits.map(h => daysSince(h, now)).join('|') + '|' + new Date(now).getDate() + '|' + new Date(now).getHours();
 
   function renderHero(now){
