@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E7C6B">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Volhouden">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -149,7 +150,7 @@ label{font-size:13px; font-weight:600; color:var(--ink2); display:flex; flex-dir
 .routine .prog b{font-weight:800; color:var(--ink); font-size:18px}
 .routine .bar > i{background:var(--gold)}
 .routine.full .bar > i{background:var(--accent)}
-.task{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; cursor:pointer; user-select:none}
+.task{display:flex; flex-direction:row; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; cursor:pointer; user-select:none}
 .task:hover{border-color:var(--accent)}
 .task .box{width:22px; height:22px; border-radius:7px; border:2px solid var(--line); flex:none; display:grid; place-items:center; color:var(--accent-ink); background:var(--surface2)}
 .task.done .box{background:var(--accent); border-color:var(--accent)}
